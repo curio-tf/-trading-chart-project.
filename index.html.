@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Trading Chart</title>
+  <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+  <style>
+    body { margin: 0; background: #131722; }
+    #chart { width: 100%; height: 90vh; }
+  </style>
+</head>
+<body>
+  <div id="chart"></div>
+  <script>
+    const chart = LightweightCharts.createChart(
+      document.getElementById('chart'),
+      {
+        layout: {
+          background: { color: '#131722' },
+          textColor: '#d1d4dc'
+        },
+        grid: {
+          vertLines: { color: '#242834' },
+          horzLines: { color: '#242834' }
+        },
+        width: window.innerWidth,
+        height: window.innerHeight * 0.9
+      }
+    );
+
+    const candles = chart.addSeries(
+      LightweightCharts.CandlestickSeries
+    );
+
+    candles.setData([
+      { time: '2026-10-20', open: 100, high: 110, low: 95, close: 107 },
+      { time: '2026-10-21', open: 107, high: 115, low: 103, close: 112 },
+      { time: '2026-10-22', open: 112, high: 114, low: 98, close: 101 },
+      { time: '2026-10-23', open: 101, high: 108, low: 97, close: 106 },
+      { time: '2026-10-24', open: 106, high: 120, low: 104, close: 117 },
+      { time: '2026-10-25', open: 117, high: 123, low: 110, close: 113 },
+      { time: '2026-10-26', open: 113, high: 119, low: 109, close: 116 },
+      { time: '2026-10-27', open: 116, high: 125, low: 114, close: 122 },
+      { time: '2026-10-28', open: 122, high: 128, low: 115, close: 118 },
+      { time: '2026-10-29', open: 118, high: 130, low: 116, close: 127 }
+    ]);
+
+    chart.timeScale().fitContent();
+
+    window.addEventListener('resize', () => {
+      chart.applyOptions({
+        width: window.innerWidth,
+        height: window.innerHeight * 0.9
+      });
+    });
+  </script>
+</body>
+</html>
