@@ -1,58 +1,149 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>My Trading Chart</title>
-  <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
   <style>
-    body { margin: 0; background: #131722; }
-    #chart { width: 100%; height: 90vh; }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      background: #131722;
+      color: #d1d4dc;
+      font-family: Arial, sans-serif;
+    }
+    header {
+      height: 55px;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      background: #1e222d;
+      border-bottom: 1px solid #363a45;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    #status {
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #b2b5be;
+    }
+    #chart {
+      width: 100%;
+      height: 75vh;
+      min-height: 350px;
+    }
+    footer {
+      padding: 12px 16px;
+      font-size: 12px;
+      color: #787b86;
+    }
+    #error {
+      display: none;
+      padding: 20px;
+      color: #ff7878;
+      overflow-wrap: anywhere;
+    }
   </style>
 </head>
 <body>
+  <header>My Trading Chart</header>
+  <div id="status">Loading chart...</div>
   <div id="chart"></div>
+  <div id="error"></div>
+  <footer>
+    Demonstration chart · Sample prices only ·
+    Powered by TradingView Lightweight Charts
+  </footer>
   <script>
-    const chart = LightweightCharts.createChart(
-      document.getElementById('chart'),
-      {
-        layout: {
-          background: { color: '#131722' },
-          textColor: '#d1d4dc'
-        },
-        grid: {
-          vertLines: { color: '#242834' },
-          horzLines: { color: '#242834' }
-        },
-        width: window.innerWidth,
-        height: window.innerHeight * 0.9
-      }
-    );
-
-    const candles = chart.addSeries(
-      LightweightCharts.CandlestickSeries
-    );
-
-    candles.setData([
-      { time: '2026-10-20', open: 100, high: 110, low: 95, close: 107 },
-      { time: '2026-10-21', open: 107, high: 115, low: 103, close: 112 },
-      { time: '2026-10-22', open: 112, high: 114, low: 98, close: 101 },
-      { time: '2026-10-23', open: 101, high: 108, low: 97, close: 106 },
-      { time: '2026-10-24', open: 106, high: 120, low: 104, close: 117 },
-      { time: '2026-10-25', open: 117, high: 123, low: 110, close: 113 },
-      { time: '2026-10-26', open: 113, high: 119, low: 109, close: 116 },
-      { time: '2026-10-27', open: 116, high: 125, low: 114, close: 122 },
-      { time: '2026-10-28', open: 122, high: 128, low: 115, close: 118 },
-      { time: '2026-10-29', open: 118, high: 130, low: 116, close: 127 }
-    ]);
-
-    chart.timeScale().fitContent();
-
-    window.addEventListener('resize', () => {
-      chart.applyOptions({
-        width: window.innerWidth,
-        height: window.innerHeight * 0.9
-      });
-    });
+    const status = document.getElementById("status");
+    const chartBox = document.getElementById("chart");
+    const errorBox = document.getElementById("error");
+    function showError(message) {
+      status.textContent = "Chart could not load.";
+      errorBox.style.display = "block";
+      errorBox.textContent = message;
+    }
+    function loadChartLibrary() {
+      const script = document.createElement("script");
+      script.src =
+        "https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js";
+      script.onload = function () {
+        try {
+          if (!window.LightweightCharts) {
+            throw new Error("Chart library was not available.");
+          }
+          const chart = LightweightCharts.createChart(chartBox, {
+            width: chartBox.clientWidth,
+            height: chartBox.clientHeight,
+            layout: {
+              background: { color: "#131722" },
+              textColor: "#d1d4dc"
+            },
+            grid: {
+              vertLines: { color: "#242834" },
+              horzLines: { color: "#242834" }
+            },
+            rightPriceScale: {
+              borderColor: "#363a45"
+            },
+            timeScale: {
+              borderColor: "#363a45",
+              timeVisible: true
+            },
+            crosshair: {
+              mode: LightweightCharts.CrosshairMode.Normal
+            }
+          });
+          const candles = chart.addSeries(
+            LightweightCharts.CandlestickSeries,
+            {
+              upColor: "#26a69a",
+              downColor: "#ef5350",
+              borderVisible: false,
+              wickUpColor: "#26a69a",
+              wickDownColor: "#ef5350"
+            }
+          );
+          candles.setData([
+            { time: "2026-10-01", open: 100, high: 110, low: 95, close: 107 },
+            { time: "2026-10-02", open: 107, high: 115, low: 103, close: 112 },
+            { time: "2026-10-03", open: 112, high: 114, low: 98, close: 101 },
+            { time: "2026-10-04", open: 101, high: 108, low: 97, close: 106 },
+            { time: "2026-10-05", open: 106, high: 120, low: 104, close: 117 },
+            { time: "2026-10-06", open: 117, high: 123, low: 110, close: 113 },
+            { time: "2026-10-07", open: 113, high: 119, low: 109, close: 116 },
+            { time: "2026-10-08", open: 116, high: 125, low: 114, close: 122 },
+            { time: "2026-10-09", open: 122, high: 128, low: 115, close: 118 },
+            { time: "2026-10-10", open: 118, high: 130, low: 116, close: 127 },
+            { time: "2026-10-11", open: 127, high: 134, low: 123, close: 131 },
+            { time: "2026-10-12", open: 131, high: 136, low: 120, close: 124 },
+            { time: "2026-10-13", open: 124, high: 129, low: 118, close: 126 },
+            { time: "2026-10-14", open: 126, high: 140, low: 125, close: 137 },
+            { time: "2026-10-15", open: 137, high: 142, low: 130, close: 133 }
+          ]);
+          chart.timeScale().fitContent();
+          window.addEventListener("resize", function () {
+            chart.applyOptions({
+              width: chartBox.clientWidth,
+              height: chartBox.clientHeight
+            });
+          });
+          status.textContent =
+            "Chart loaded · Illustrative data, not live market prices";
+        } catch (error) {
+          showError("Chart error: " + error.message);
+        }
+      };
+      script.onerror = function () {
+        showError(
+          "The chart library could not download. Check your internet connection or try again later."
+        );
+      };
+      document.head.appendChild(script);
+    }
+    loadChartLibrary();
   </script>
 </body>
 </html>
